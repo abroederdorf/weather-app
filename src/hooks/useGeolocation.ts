@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export interface GeoPosition {
   latitude: number;
@@ -9,35 +9,59 @@ export interface GeolocationState {
   position: GeoPosition | null;
   error: string | null;
   loading: boolean;
+  permissionState: PermissionState | null;
+  retry: () => void;
 }
 
 export function useGeolocation(): GeolocationState {
-  const [state, setState] = useState<GeolocationState>({
-    position: null,
-    error: null,
-    loading: true,
-  });
+  const [position, setPosition] = useState<GeoPosition | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [permissionState, setPermissionState] = useState<PermissionState | null>(null);
+  const permResultRef = useRef<PermissionStatus | null>(null);
 
-  useEffect(() => {
+  const request = useCallback(() => {
     if (!navigator.geolocation) {
-      setState({ position: null, error: 'Geolocation not supported', loading: false });
+      setError('Geolocation not supported');
+      setLoading(false);
       return;
     }
-
+    setLoading(true);
+    setError(null);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setState({
-          position: { latitude: pos.coords.latitude, longitude: pos.coords.longitude },
-          error: null,
-          loading: false,
-        });
+        setPosition({ latitude: pos.coords.latitude, longitude: pos.coords.longitude });
+        setLoading(false);
       },
       (err) => {
-        setState({ position: null, error: err.message, loading: false });
+        setError(err.message);
+        setLoading(false);
       },
       { timeout: 10000 }
     );
   }, []);
 
-  return state;
+  // Track permission state
+  useEffect(() => {
+    navigator.permissions
+      ?.query({ name: 'geolocation' })
+      .then((result) => {
+        permResultRef.current = result;
+        setPermissionState(result.state);
+        result.onchange = () => setPermissionState(result.state);
+      })
+      .catch(() => {
+        // permissions API not available — leave as null
+      });
+    return () => {
+      if (permResultRef.current) permResultRef.current.onchange = null;
+    };
+  }, []);
+
+  // Initial request on mount
+  useEffect(() => {
+    request();
+  }, [request]);
+
+  return { position, error, loading, permissionState, retry: request };
 }

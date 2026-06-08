@@ -136,3 +136,46 @@
 .removeBtn:hover {
   color: #f87171;
 }
+
+.retryBtn {
+  font-size: 12px;
+  color: var(--accent);
+  text-align: left;
+  padding: 0;
+  margin-top: 1px;
+}
+
+.retryBtn:hover {
+  text-decoration: underline;
+}
+
+.rowWeather {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex-shrink: 0;
+  min-width: 72px;
+}
+
+.weatherSpacer {
+  min-width: 72px;
+  flex-shrink: 0;
+}
+
+.rowWeatherIcon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.rowHi {
+  font-size: 11px;
+  color: #fb923c;
+  white-space: nowrap;
+}
+
+.rowLo {
+  font-size: 11px;
+  color: #60a5fa;
+  white-space: nowrap;
+}

@@ -59,6 +59,9 @@ export default function App() {
           onAddClick={() => setShowSearch(true)}
           onBack={() => setView('weather')}
           geoAvailable={!!geo.position}
+          geoPermission={geo.permissionState}
+          onRequestGeo={geo.retry}
+          geoPosition={geo.position}
         />
         {showSearch && (
           <LocationSearch

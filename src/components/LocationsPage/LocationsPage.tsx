@@ -15,6 +15,9 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { SavedLocation } from '../../hooks/useSavedLocations';
+import { useWeather } from '../../hooks/useWeather';
+import { getWeatherInfo } from '../../utils/weather';
+import { formatTempShort } from '../../utils/units';
 import styles from './LocationsPage.module.css';
 
 const GEO_TAB_ID = '__geo__';
@@ -28,10 +31,14 @@ interface Props {
   onAddClick: () => void;
   onBack: () => void;
   geoAvailable: boolean;
+  geoPermission: PermissionState | null;
+  onRequestGeo: () => void;
+  geoPosition: { latitude: number; longitude: number } | null;
 }
 
 export function LocationsPage({
-  locations, activeId, onSelect, onRemove, onReorder, onAddClick, onBack, geoAvailable,
+  locations, activeId, onSelect, onRemove, onReorder, onAddClick, onBack,
+  geoAvailable, geoPermission, onRequestGeo, geoPosition,
 }: Props) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -59,13 +66,25 @@ export function LocationsPage({
         {/* Pinned geo row */}
         <div
           className={`${styles.row} ${activeId === GEO_TAB_ID ? styles.active : ''}`}
-          onClick={() => onSelect(GEO_TAB_ID)}
+          onClick={geoAvailable ? () => onSelect(GEO_TAB_ID) : undefined}
+          style={{ cursor: geoAvailable ? 'pointer' : 'default' }}
         >
           <span className={styles.geoIcon}>◎</span>
           <div className={styles.info}>
             <span className={styles.name}>My Location</span>
-            <span className={styles.sub}>{geoAvailable ? 'GPS' : 'GPS unavailable'}</span>
+            {geoAvailable ? (
+              <span className={styles.sub}>GPS</span>
+            ) : geoPermission === 'denied' ? (
+              <span className={styles.sub}>Enable in browser settings</span>
+            ) : (
+              <button className={styles.retryBtn} onClick={(e) => { e.stopPropagation(); onRequestGeo(); }}>
+                Use my location
+              </button>
+            )}
           </div>
+          {geoPosition && (
+            <RowWeather latitude={geoPosition.latitude} longitude={geoPosition.longitude} />
+          )}
           {activeId === GEO_TAB_ID && <span className={styles.check}>✓</span>}
         </div>
 
@@ -89,6 +108,19 @@ export function LocationsPage({
           </SortableContext>
         </DndContext>
       </div>
+    </div>
+  );
+}
+
+function RowWeather({ latitude, longitude }: { latitude: number; longitude: number }) {
+  const { data } = useWeather(latitude, longitude);
+  if (!data) return <div className={styles.weatherSpacer} />;
+  const icon = getWeatherInfo(data.daily.weathercode[0]).icon;
+  return (
+    <div className={styles.rowWeather}>
+      <span className={styles.rowWeatherIcon}>{icon}</span>
+      <span className={styles.rowHi}>{formatTempShort(data.daily.temperature_2m_max[0])}</span>
+      <span className={styles.rowLo}>{formatTempShort(data.daily.temperature_2m_min[0])}</span>
     </div>
   );
 }
@@ -125,6 +157,7 @@ function SortableRow({
         <span className={styles.name}>{location.name}</span>
         {sub && <span className={styles.sub}>{sub}</span>}
       </div>
+      <RowWeather latitude={location.latitude} longitude={location.longitude} />
       {isActive && <span className={styles.check}>✓</span>}
       <button
         className={styles.removeBtn}
