@@ -1,7 +1,7 @@
 import type { HourlyData } from '../../api/openmeteo';
 import { getHoursForDay, formatHour } from '../../api/openmeteo';
 import { formatTemp, formatPrecipAmount, formatWindSpeed, degreesToCompass, formatSnowfall } from '../../utils/units';
-import { getUvLabel, getUvColor } from '../../utils/weather';
+import { getUvLabel, getUvColor, getWeatherInfo } from '../../utils/weather';
 import styles from './HourlyForecast.module.css';
 
 interface Props {
@@ -23,6 +23,7 @@ export function HourlyForecast({ hourly, selectedDay, timezone }: Props) {
           return (
             <div key={i} className={styles.card}>
               <div className={styles.time}>{formatHour(hourly.time[i], timezone)}</div>
+              <div className={styles.icon}>{getWeatherInfo(hourly.weathercode[i]).icon}</div>
               <div className={styles.temp}>{formatTemp(hourly.temperature_2m[i])}</div>
               <Row label="Feels" value={formatTemp(hourly.apparent_temperature[i])} />
               <Row label="Rain" value={`${hourly.precipitation_probability[i]}%`} />

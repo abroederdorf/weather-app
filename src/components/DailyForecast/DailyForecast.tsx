@@ -43,7 +43,7 @@ export function DailyForecast({ daily, selectedDay, onDaySelect }: Props) {
                 </span>
               </div>
               <div className={styles.precip}>
-                <span>{daily.precipitation_probability_max[i]}%</span>
+                <span>💧 {daily.precipitation_probability_max[i]}%</span>
                 <span>{formatPrecipAmount(daily.precipitation_sum[i])}</span>
               </div>
               <div className={styles.uv} style={{ color: getUvColor(uv) }}>
