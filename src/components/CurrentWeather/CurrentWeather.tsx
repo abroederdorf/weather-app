@@ -93,7 +93,9 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
               value={`${Math.round(daily.uv_index_max[selectedDay])} · ${getUvLabel(daily.uv_index_max[selectedDay])}`}
               style={{ color: getUvColor(daily.uv_index_max[selectedDay]) }}
             />
-            <Stat label="Snow" value={formatSnowfall(daily.snowfall_sum[selectedDay])} />
+            {daily.snowfall_sum[selectedDay] > 0 && (
+              <Stat label="Snow" value={formatSnowfall(daily.snowfall_sum[selectedDay])} />
+            )}
           </div>
         </>
       )}
