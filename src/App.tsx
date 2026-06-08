@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useWeather } from './hooks/useWeather';
+import { useAirQuality } from './hooks/useAirQuality';
 import { useSavedLocations } from './hooks/useSavedLocations';
 import { CurrentWeather } from './components/CurrentWeather/CurrentWeather';
 import { HourlyForecast } from './components/HourlyForecast/HourlyForecast';
@@ -30,6 +31,11 @@ export default function App() {
       : (locations.find((l) => l.id === activeId)?.name ?? '');
 
   const weather = useWeather(
+    activeLocation?.latitude ?? null,
+    activeLocation?.longitude ?? null
+  );
+
+  const airQuality = useAirQuality(
     activeLocation?.latitude ?? null,
     activeLocation?.longitude ?? null
   );
@@ -76,7 +82,12 @@ export default function App() {
 
         {weather.data && (
           <>
-            <CurrentWeather data={weather.data} locationName={activeLocationName} />
+            <CurrentWeather
+              data={weather.data}
+              locationName={activeLocationName}
+              selectedDay={selectedDay}
+              airQuality={airQuality.data?.current ?? null}
+            />
             <HourlyForecast
               hourly={weather.data.hourly}
               selectedDay={selectedDay}
