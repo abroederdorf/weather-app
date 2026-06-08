@@ -15,6 +15,7 @@ export interface HourlyData {
   apparent_temperature: number[];
   precipitation_probability: number[];
   precipitation: number[];
+  weathercode: number[];
   uv_index: number[];
   cloudcover: number[];
   wind_speed_10m: number[];
@@ -60,7 +61,7 @@ export async function fetchForecast(
     ].join(','),
     hourly: [
       'temperature_2m', 'apparent_temperature', 'precipitation_probability',
-      'precipitation', 'uv_index', 'cloudcover',
+      'precipitation', 'weathercode', 'uv_index', 'cloudcover',
       'wind_speed_10m', 'wind_direction_10m', 'wind_gusts_10m', 'snowfall',
     ].join(','),
     daily: [
