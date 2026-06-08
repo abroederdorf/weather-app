@@ -23,7 +23,7 @@ export function formatPrecip(mm: number): string {
 export function formatPrecipAmount(mm: number): string {
   if (mm === 0) return '0"';
   const inches = mmToInches(mm);
-  return `${inches}"`;
+  return `${inches}" / ${Math.round(mm)}mm`;
 }
 
 export function kmhToMph(kmh: number): number {
