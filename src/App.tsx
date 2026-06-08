@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usePwaInstall } from './hooks/usePwaInstall';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useWeather } from './hooks/useWeather';
 import { useAirQuality } from './hooks/useAirQuality';
@@ -13,6 +14,7 @@ import styles from './App.module.css';
 const GEO_TAB_ID = '__geo__';
 
 export default function App() {
+  const { canInstall, install } = usePwaInstall();
   const geo = useGeolocation();
   const { locations, addLocation, removeLocation, reorderLocations } = useSavedLocations();
   const [activeId, setActiveId] = useState<string>(GEO_TAB_ID);
@@ -80,13 +82,20 @@ export default function App() {
       <header className={styles.header}>
         <span className={styles.logo}>⛅ Weather</span>
         <span className={styles.headerLocation}>{activeLocationName}</span>
-        <button
-          className={styles.menuBtn}
-          onClick={() => setView('locations')}
-          title="Locations"
-        >
-          ☰
-        </button>
+        <div className={styles.headerActions}>
+          {canInstall && (
+            <button className={styles.installBtn} onClick={install} title="Install app">
+              ⬇
+            </button>
+          )}
+          <button
+            className={styles.menuBtn}
+            onClick={() => setView('locations')}
+            title="Locations"
+          >
+            ☰
+          </button>
+        </div>
       </header>
 
       <main className={styles.main}>
