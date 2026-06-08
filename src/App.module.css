@@ -30,12 +30,29 @@
   text-overflow: ellipsis;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  flex: 1;
+}
+
+.installBtn {
+  font-size: 18px;
+  color: var(--accent);
+  padding: 4px 6px;
+  transition: opacity 0.15s;
+}
+
+.installBtn:hover {
+  opacity: 0.7;
+}
+
 .menuBtn {
   font-size: 20px;
   color: var(--text-secondary);
   padding: 4px 8px;
-  flex: 1;
-  text-align: right;
   transition: color 0.15s;
 }
 
