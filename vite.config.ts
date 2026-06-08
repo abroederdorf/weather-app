@@ -17,6 +17,19 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/weather-app/',
+        screenshots: [
+          {
+            src: 'screenshot-mobile.png',
+            sizes: '390x844',
+            type: 'image/png',
+          },
+          {
+            src: 'screenshot-wide.png',
+            sizes: '1280x800',
+            type: 'image/png',
+            form_factor: 'wide',
+          },
+        ],
         icons: [
           {
             src: 'pwa-192x192.png',
