@@ -5,11 +5,23 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
+declare global {
+  interface Window {
+    __pwaPrompt?: BeforeInstallPromptEvent;
+  }
+}
+
 export function usePwaInstall() {
   const [promptEvent, setPromptEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
+    // Pick up the event if it fired before React mounted
+    if (window.__pwaPrompt) {
+      setPromptEvent(window.__pwaPrompt);
+      window.__pwaPrompt = undefined;
+    }
+
     const onPrompt = (e: Event) => {
       e.preventDefault();
       setPromptEvent(e as BeforeInstallPromptEvent);
