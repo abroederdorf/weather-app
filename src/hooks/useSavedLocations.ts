@@ -48,5 +48,14 @@ export function useSavedLocations() {
     });
   }, []);
 
-  return { locations, addLocation, removeLocation };
+  const reorderLocations = useCallback((orderedIds: string[]) => {
+    setLocations((prev) => {
+      const map = new Map(prev.map((l) => [l.id, l]));
+      const next = orderedIds.map((id) => map.get(id)!).filter(Boolean);
+      saveToStorage(next);
+      return next;
+    });
+  }, []);
+
+  return { locations, addLocation, removeLocation, reorderLocations };
 }
