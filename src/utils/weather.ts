@@ -49,3 +49,21 @@ export function getUvColor(uv: number): string {
   if (uv < 11) return '#f87171';
   return '#c084fc';
 }
+
+export function getAqiLabel(aqi: number): string {
+  if (aqi <= 50) return 'Good';
+  if (aqi <= 100) return 'Moderate';
+  if (aqi <= 150) return 'Unhealthy for Sensitive Groups';
+  if (aqi <= 200) return 'Unhealthy';
+  if (aqi <= 300) return 'Very Unhealthy';
+  return 'Hazardous';
+}
+
+export function getAqiColor(aqi: number): string {
+  if (aqi <= 50) return '#4ade80';
+  if (aqi <= 100) return '#facc15';
+  if (aqi <= 150) return '#fb923c';
+  if (aqi <= 200) return '#f87171';
+  if (aqi <= 300) return '#c084fc';
+  return '#be123c';
+}
