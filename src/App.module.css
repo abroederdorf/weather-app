@@ -17,12 +17,30 @@
   font-size: 18px;
   font-weight: 600;
   color: var(--text-primary);
+  flex: 1;
 }
 
-.tagline {
-  font-size: 12px;
+.headerLocation {
+  font-size: 13px;
   color: var(--text-dim);
-  letter-spacing: 0.5px;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menuBtn {
+  font-size: 20px;
+  color: var(--text-secondary);
+  padding: 4px 8px;
+  flex: 1;
+  text-align: right;
+  transition: color 0.15s;
+}
+
+.menuBtn:hover {
+  color: var(--accent);
 }
 
 .main {
