@@ -1,6 +1,6 @@
 import type { DailyData } from '../../api/openmeteo';
-import { formatTempShort, formatPrecipAmount } from '../../utils/units';
-import { getWeatherInfo } from '../../utils/weather';
+import { formatTempShort, formatPrecipAmount, formatSnowfall } from '../../utils/units';
+import { getWeatherInfo, getUvColor } from '../../utils/weather';
 import styles from './DailyForecast.module.css';
 
 interface Props {
@@ -24,6 +24,8 @@ export function DailyForecast({ daily, selectedDay, onDaySelect }: Props) {
         {daily.time.map((date, i) => {
           const weather = getWeatherInfo(daily.weathercode[i]);
           const isSelected = i === selectedDay;
+          const uv = daily.uv_index_max[i];
+          const snow = daily.snowfall_sum[i];
           return (
             <button
               key={date}
@@ -44,6 +46,12 @@ export function DailyForecast({ daily, selectedDay, onDaySelect }: Props) {
                 <span>{daily.precipitation_probability_max[i]}%</span>
                 <span>{formatPrecipAmount(daily.precipitation_sum[i])}</span>
               </div>
+              <div className={styles.uv} style={{ color: getUvColor(uv) }}>
+                UV {Math.round(uv)}
+              </div>
+              {snow > 0 && (
+                <div className={styles.snow}>❄️ {formatSnowfall(snow)}</div>
+              )}
             </button>
           );
         })}
