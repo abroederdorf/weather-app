@@ -82,10 +82,10 @@ export function LocationsPage({
               </button>
             )}
           </div>
+          {activeId === GEO_TAB_ID && <span className={styles.check}>✓</span>}
           {geoPosition && (
             <RowWeather latitude={geoPosition.latitude} longitude={geoPosition.longitude} />
           )}
-          {activeId === GEO_TAB_ID && <span className={styles.check}>✓</span>}
         </div>
 
         <div className={styles.divider} />
@@ -157,8 +157,8 @@ function SortableRow({
         <span className={styles.name}>{location.name}</span>
         {sub && <span className={styles.sub}>{sub}</span>}
       </div>
-      <RowWeather latitude={location.latitude} longitude={location.longitude} />
       {isActive && <span className={styles.check}>✓</span>}
+      <RowWeather latitude={location.latitude} longitude={location.longitude} />
       <button
         className={styles.removeBtn}
         onClick={(e) => { e.stopPropagation(); onRemove(location.id); }}
