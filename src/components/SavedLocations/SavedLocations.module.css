@@ -1,0 +1,81 @@
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tabs {
+  flex: 1;
+  padding-bottom: 4px;
+  gap: 6px;
+}
+
+.tabWrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.tabWrap:has(.tab.active) {
+  border-color: var(--border-selected);
+}
+
+.tab {
+  padding: 7px 14px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.tab.active {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.tab:hover:not(.active) {
+  color: var(--text-primary);
+}
+
+.geoIcon {
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.removeBtn {
+  padding: 7px 10px 7px 4px;
+  font-size: 10px;
+  color: var(--text-dim);
+  transition: color 0.1s;
+}
+
+.removeBtn:hover {
+  color: #f87171;
+}
+
+.addBtn {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 20px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.addBtn:hover {
+  background: var(--bg-card-hover);
+  color: var(--accent);
+  border-color: var(--border-selected);
+}

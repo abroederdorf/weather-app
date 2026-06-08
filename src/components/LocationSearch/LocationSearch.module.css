@@ -1,0 +1,89 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 16px 0;
+  z-index: 100;
+}
+
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px 12px;
+  font-size: 15px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+
+.closeBtn {
+  color: var(--text-dim);
+  font-size: 16px;
+  padding: 4px;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg-primary);
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: 16px;
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--text-dim);
+}
+
+.hint {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.list {
+  list-style: none;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.result {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 14px 16px;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+  text-align: left;
+}
+
+.result:hover {
+  background: var(--bg-card-hover);
+}
+
+.cityName {
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.region {
+  font-size: 12px;
+  color: var(--text-dim);
+}
