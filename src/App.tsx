@@ -83,7 +83,6 @@ export default function App() {
     <div className={styles.app}>
       <header className={styles.header}>
         <span className={styles.logo}>⛅ Weather</span>
-        <span className={styles.headerLocation}>{activeLocationName}</span>
         <div className={styles.headerActions}>
           <button className={styles.unitToggleBtn} onClick={toggle} title="Toggle unit order">
             {metricFirst ? '°C/°F' : '°F/°C'}

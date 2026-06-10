@@ -51,7 +51,7 @@ export function HourlyForecast({ hourly, selectedDay, timezone }: Props) {
               <div className={styles.time}>{formatHour(hourly.time[i], timezone)}</div>
               <div className={styles.icon}>{getWeatherInfo(hourly.weathercode[i]).icon}</div>
               <div className={styles.temp}>{formatTemp(hourly.temperature_2m[i], metricFirst)}</div>
-              <Row label="Feels" value={formatTemp(hourly.apparent_temperature[i], metricFirst)} />
+              <FeelsLike temp={hourly.apparent_temperature[i]} metricFirst={metricFirst} />
               <Row label="Rain" value={`${hourly.precipitation_probability[i]}%`} />
               <Row label="Amount" value={formatPrecipAmount(hourly.precipitation[i], metricFirst)} />
               <Row
@@ -81,6 +81,21 @@ function Row({
     <div className={styles.row}>
       <span className={styles.rowLabel}>{label}</span>
       <span className={styles.rowValue} style={style}>{value}</span>
+    </div>
+  );
+}
+
+function FeelsLike({ temp, metricFirst }: { temp: number; metricFirst: boolean }) {
+  const [primary, secondary] = formatTemp(temp, metricFirst).split(' / ');
+  return (
+    <div className={styles.feelsLike}>
+      <div className={styles.row}>
+        <span className={styles.rowLabel}>Feels Like</span>
+        <span className={styles.feelsHigh}>{primary}</span>
+      </div>
+      <div className={styles.feelsSecond}>
+        <span className={styles.feelsLow}>{secondary}</span>
+      </div>
     </div>
   );
 }

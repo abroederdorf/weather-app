@@ -20,16 +20,6 @@
   flex: 1;
 }
 
-.headerLocation {
-  font-size: 13px;
-  color: var(--text-dim);
-  flex: 1;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .headerActions {
   display: flex;
   align-items: center;

@@ -65,3 +65,26 @@
   text-align: right;
   white-space: nowrap;
 }
+
+.feelsLike {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.feelsSecond {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.feelsHigh {
+  font-size: 11px;
+  color: #fb923c;
+  white-space: nowrap;
+}
+
+.feelsLow {
+  font-size: 11px;
+  color: #60a5fa;
+  white-space: nowrap;
+}
