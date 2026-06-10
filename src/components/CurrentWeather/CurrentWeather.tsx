@@ -116,7 +116,7 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
         </>
       )}
 
-      {airQuality && (
+      {isToday && airQuality && (
         <div className={styles.aqiRow}>
           <span
             className={styles.aqiBadge}
