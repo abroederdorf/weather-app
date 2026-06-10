@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { searchLocations } from '../../api/geocoding';
+import { searchLocations, reverseGeocode } from '../../api/geocoding';
 import type { GeoResult } from '../../api/geocoding';
 import type { SavedLocation } from '../../hooks/useSavedLocations';
 import styles from './LocationSearch.module.css';
@@ -9,10 +9,21 @@ interface Props {
   onClose: () => void;
 }
 
+function parseLatLon(query: string): { lat: number; lon: number } | null {
+  const match = query.trim().match(/^(-?\d+(?:\.\d+)?)\s*[,\s]\s*(-?\d+(?:\.\d+)?)$/);
+  if (!match) return null;
+  const lat = parseFloat(match[1]);
+  const lon = parseFloat(match[2]);
+  if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
+  return { lat, lon };
+}
+
 export function LocationSearch({ onAdd, onClose }: Props) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeoResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [coordPreview, setCoordPreview] = useState<{ lat: number; lon: number } | null>(null);
+  const [adding, setAdding] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -20,6 +31,13 @@ export function LocationSearch({ onAdd, onClose }: Props) {
   }, []);
 
   useEffect(() => {
+    const coords = parseLatLon(query);
+    if (coords) {
+      setResults([]);
+      setCoordPreview(coords);
+      return;
+    }
+    setCoordPreview(null);
     if (!query.trim()) {
       setResults([]);
       return;
@@ -47,6 +65,21 @@ export function LocationSearch({ onAdd, onClose }: Props) {
     onClose();
   }
 
+  async function handleSelectCoords(lat: number, lon: number) {
+    setAdding(true);
+    try {
+      const result = await reverseGeocode(lat, lon);
+      onAdd(
+        result
+          ? { name: result.name, region: result.admin1, country: result.country, latitude: lat, longitude: lon }
+          : { name: `${lat.toFixed(4)}, ${lon.toFixed(4)}`, region: undefined, country: '', latitude: lat, longitude: lon }
+      );
+    } finally {
+      setAdding(false);
+    }
+    onClose();
+  }
+
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -57,13 +90,30 @@ export function LocationSearch({ onAdd, onClose }: Props) {
         <input
           ref={inputRef}
           className={styles.input}
-          placeholder="Search city…"
+          placeholder="Search city or paste lat, lon…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         {loading && <div className={styles.hint}>Searching…</div>}
-        {!loading && results.length === 0 && query.trim() && (
+        {adding && <div className={styles.hint}>Looking up location…</div>}
+        {!loading && !adding && !coordPreview && results.length === 0 && query.trim() && (
           <div className={styles.hint}>No results found</div>
+        )}
+        {coordPreview && (
+          <ul className={styles.list}>
+            <li>
+              <button
+                className={styles.result}
+                onClick={() => handleSelectCoords(coordPreview.lat, coordPreview.lon)}
+                disabled={adding}
+              >
+                <span className={styles.cityName}>
+                  📍 {coordPreview.lat.toFixed(4)}, {coordPreview.lon.toFixed(4)}
+                </span>
+                <span className={styles.region}>Tap to add this location</span>
+              </button>
+            </li>
+          </ul>
         )}
         <ul className={styles.list}>
           {results.map((r) => (
