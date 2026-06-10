@@ -9,12 +9,6 @@
   border: 1px solid var(--border);
 }
 
-.locationRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .location {
   font-size: 14px;
   color: var(--text-secondary);
