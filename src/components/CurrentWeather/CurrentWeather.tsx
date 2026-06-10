@@ -1,4 +1,5 @@
 import type { ForecastResponse } from '../../api/openmeteo';
+import { getHoursForDay } from '../../api/openmeteo';
 import type { AirQualityCurrent } from '../../api/airquality';
 import {
   formatTemp, formatTempShort, formatPrecip,
@@ -17,22 +18,25 @@ interface Props {
 
 export function CurrentWeather({ data, locationName, selectedDay, airQuality }: Props) {
   const { metricFirst } = useUnitPreference();
-  const { current, daily, timezone } = data;
+  const { current, daily, hourly, timezone } = data;
   const isToday = selectedDay === 0;
   const weather = getWeatherInfo(isToday ? current.weathercode : daily.weathercode[selectedDay]);
 
   const dayLabel = isToday
     ? null
     : new Date(daily.time[selectedDay] + 'T12:00:00').toLocaleDateString('en-US', {
-        weekday: 'short', month: 'short', day: 'numeric',
+        weekday: 'long', month: 'long', day: 'numeric',
       });
+
+  const maxWind = isToday ? null : (() => {
+    const indices = getHoursForDay(hourly, selectedDay);
+    return Math.max(...indices.map(i => hourly.wind_speed_10m[i]));
+  })();
 
   return (
     <div className={styles.card}>
-      <div className={styles.locationRow}>
-        <span className={styles.location}>{locationName}</span>
-        {dayLabel && <span className={styles.dayLabel}>{dayLabel}</span>}
-      </div>
+      <div className={styles.location}>{locationName}</div>
+      {dayLabel && <div className={styles.dayLabel}>{dayLabel}</div>}
 
       <div className={styles.icon}>{weather.icon}</div>
       <div className={styles.condition}>{weather.label}</div>
@@ -71,15 +75,27 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
         </>
       ) : (
         <>
-          <div className={styles.feelsLike}>
-            Feels like H {formatTempShort(daily.apparent_temperature_max[selectedDay], metricFirst)}
-            {' · '}L {formatTempShort(daily.apparent_temperature_min[selectedDay], metricFirst)}
-          </div>
           <div className={styles.highLow}>
             <span className={styles.high}>H: {formatTemp(daily.temperature_2m_max[selectedDay], metricFirst)}</span>
             <span className={styles.sep}>·</span>
             <span className={styles.low}>L: {formatTemp(daily.temperature_2m_min[selectedDay], metricFirst)}</span>
           </div>
+          <div className={styles.feelsLike}>
+            Feels like H {formatTempShort(daily.apparent_temperature_max[selectedDay], metricFirst)}
+            {' · '}L {formatTempShort(daily.apparent_temperature_min[selectedDay], metricFirst)}
+          </div>
+
+          <div className={styles.statRow}>
+            <Stat label="Precip" value={`${daily.precipitation_probability_max[selectedDay]}%`} />
+            <Stat label="Amount" value={formatPrecip(daily.precipitation_sum[selectedDay], metricFirst)} />
+          </div>
+
+          {maxWind !== null && (
+            <div className={styles.windRow}>
+              <span className={styles.windLabel}>Max Wind</span>
+              <span className={styles.windValue}>{formatWindSpeed(maxWind, metricFirst)}</span>
+            </div>
+          )}
 
           <div className={styles.sunRow}>
             <span>☀️ {formatTime(daily.sunrise[selectedDay], timezone)}</span>
