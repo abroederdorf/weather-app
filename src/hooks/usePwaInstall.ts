@@ -23,7 +23,6 @@ export function usePwaInstall() {
     }
 
     const onPrompt = (e: Event) => {
-      e.preventDefault();
       setPromptEvent(e as BeforeInstallPromptEvent);
     };
     const onInstalled = () => {
