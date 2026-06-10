@@ -41,7 +41,10 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
         <>
           <div className={styles.temp}>{formatTemp(current.temperature_2m, metricFirst)}</div>
           <div className={styles.feelsLike}>
-            Feels like {formatTemp(current.apparent_temperature, metricFirst)}
+            <span>Feels like</span>
+            {formatTemp(current.apparent_temperature, metricFirst).split(' / ').map((v, i) => (
+              <span key={i} className={i === 0 ? styles.high : styles.low}>{v}</span>
+            ))}
           </div>
 
           <div className={styles.statRow}>
@@ -79,8 +82,9 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
           </div>
 
           <div className={styles.feelsLike}>
-            Feels like H {formatTempShort(daily.apparent_temperature_max[selectedDay], metricFirst)}
-            {' / '}L {formatTempShort(daily.apparent_temperature_min[selectedDay], metricFirst)}
+            <span>Feels like</span>
+            <span className={styles.high}>H {formatTempShort(daily.apparent_temperature_max[selectedDay], metricFirst)}</span>
+            <span className={styles.low}>L {formatTempShort(daily.apparent_temperature_min[selectedDay], metricFirst)}</span>
           </div>
 
           <div className={styles.sunRow}>
