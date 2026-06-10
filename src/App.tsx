@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { usePwaInstall } from './hooks/usePwaInstall';
+import { useUnitPreference } from './hooks/useUnitPreference';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useWeather } from './hooks/useWeather';
 import { useAirQuality } from './hooks/useAirQuality';
@@ -15,6 +16,7 @@ const GEO_TAB_ID = '__geo__';
 
 export default function App() {
   const { canInstall, install } = usePwaInstall();
+  const { metricFirst, toggle } = useUnitPreference();
   const geo = useGeolocation();
   const { locations, addLocation, removeLocation, reorderLocations } = useSavedLocations();
   const [activeId, setActiveId] = useState<string>(GEO_TAB_ID);
@@ -83,6 +85,9 @@ export default function App() {
         <span className={styles.logo}>⛅ Weather</span>
         <span className={styles.headerLocation}>{activeLocationName}</span>
         <div className={styles.headerActions}>
+          <button className={styles.unitToggleBtn} onClick={toggle} title="Toggle unit order">
+            {metricFirst ? '°C/°F' : '°F/°C'}
+          </button>
           {canInstall && (
             <button className={styles.installBtn} onClick={install} title="Install app">
               ⬇
