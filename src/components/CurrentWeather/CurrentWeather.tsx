@@ -62,9 +62,9 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
           </div>
 
           <div className={styles.sunRow}>
-            <span>↑ {formatTime(daily.sunrise[0], timezone)}</span>
+            <span>☀️ {formatTime(daily.sunrise[0], timezone)}</span>
             <span className={styles.sep}>·</span>
-            <span>↓ {formatTime(daily.sunset[0], timezone)}</span>
+            <span>🌙 {formatTime(daily.sunset[0], timezone)}</span>
           </div>
 
           <div className={styles.highLow}>
@@ -88,9 +88,9 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
           </div>
 
           <div className={styles.sunRow}>
-            <span>↑ {formatTime(daily.sunrise[selectedDay], timezone)}</span>
+            <span>☀️ {formatTime(daily.sunrise[selectedDay], timezone)}</span>
             <span className={styles.sep}>·</span>
-            <span>↓ {formatTime(daily.sunset[selectedDay], timezone)}</span>
+            <span>🌙 {formatTime(daily.sunset[selectedDay], timezone)}</span>
           </div>
 
           <div className={styles.statRow}>
