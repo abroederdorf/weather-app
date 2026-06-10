@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import type { HourlyData } from '../../api/openmeteo';
 import { getHoursForDay, formatHour } from '../../api/openmeteo';
 import { formatTemp, formatPrecipAmount, formatWindSpeed, degreesToCompass, formatSnowfall } from '../../utils/units';
@@ -14,11 +15,34 @@ interface Props {
 export function HourlyForecast({ hourly, selectedDay, timezone }: Props) {
   const { metricFirst } = useUnitPreference();
   const indices = getHoursForDay(hourly, selectedDay);
+  const stripRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const strip = stripRef.current;
+    if (!strip || strip.children.length === 0) return;
+
+    let targetHour: number;
+    if (selectedDay === 0) {
+      const hourStr = new Date().toLocaleString('en-US', {
+        timeZone: timezone,
+        hour: 'numeric',
+        hour12: false,
+      });
+      targetHour = parseInt(hourStr, 10) % 24;
+    } else {
+      targetHour = 8;
+    }
+
+    const card = strip.children[targetHour] as HTMLElement | undefined;
+    if (card) {
+      strip.scrollLeft = card.offsetLeft;
+    }
+  }, [selectedDay, timezone]);
 
   return (
     <div className={styles.section}>
       <h2 className={styles.title}>Hourly Forecast</h2>
-      <div className={`scroll-x ${styles.strip}`}>
+      <div className={`scroll-x ${styles.strip}`} ref={stripRef}>
         {indices.map((i) => {
           const uv = hourly.uv_index[i];
           const snow = hourly.snowfall[i];
