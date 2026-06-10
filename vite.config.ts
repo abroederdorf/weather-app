@@ -61,7 +61,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /^https:\/\/geocoding-api\.open-meteo\.com\/.*/i,
+            urlPattern: /^https:\/\/nominatim\.openstreetmap\.org\/.*/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'geocoding-api',
