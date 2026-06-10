@@ -18,6 +18,7 @@ import type { SavedLocation } from '../../hooks/useSavedLocations';
 import { useWeather } from '../../hooks/useWeather';
 import { getWeatherInfo } from '../../utils/weather';
 import { formatTempShort } from '../../utils/units';
+import { useUnitPreference } from '../../hooks/useUnitPreference';
 import styles from './LocationsPage.module.css';
 
 const GEO_TAB_ID = '__geo__';
@@ -114,13 +115,14 @@ export function LocationsPage({
 
 function RowWeather({ latitude, longitude }: { latitude: number; longitude: number }) {
   const { data } = useWeather(latitude, longitude);
+  const { metricFirst } = useUnitPreference();
   if (!data) return <div className={styles.weatherSpacer} />;
   const icon = getWeatherInfo(data.daily.weathercode[0]).icon;
   return (
     <div className={styles.rowWeather}>
       <span className={styles.rowWeatherIcon}>{icon}</span>
-      <span className={styles.rowHi}>{formatTempShort(data.daily.temperature_2m_max[0])}</span>
-      <span className={styles.rowLo}>{formatTempShort(data.daily.temperature_2m_min[0])}</span>
+      <span className={styles.rowHi}>{formatTempShort(data.daily.temperature_2m_max[0], metricFirst)}</span>
+      <span className={styles.rowLo}>{formatTempShort(data.daily.temperature_2m_min[0], metricFirst)}</span>
     </div>
   );
 }

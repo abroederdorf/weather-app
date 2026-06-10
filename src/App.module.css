@@ -38,6 +38,21 @@
   flex: 1;
 }
 
+.unitToggleBtn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.unitToggleBtn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .installBtn {
   font-size: 18px;
   color: var(--accent);

@@ -1,6 +1,7 @@
 import type { DailyData } from '../../api/openmeteo';
 import { formatTempShort, formatPrecipAmount, formatSnowfall } from '../../utils/units';
 import { getWeatherInfo, getUvColor } from '../../utils/weather';
+import { useUnitPreference } from '../../hooks/useUnitPreference';
 import styles from './DailyForecast.module.css';
 
 interface Props {
@@ -17,6 +18,7 @@ function formatDayLabel(isoDate: string, index: number): string {
 }
 
 export function DailyForecast({ daily, selectedDay, onDaySelect }: Props) {
+  const { metricFirst } = useUnitPreference();
   return (
     <div className={styles.section}>
       <h2 className={styles.title}>10-Day Forecast</h2>
@@ -36,21 +38,21 @@ export function DailyForecast({ daily, selectedDay, onDaySelect }: Props) {
               <div className={styles.icon}>{weather.icon}</div>
               <div className={styles.temp}>
                 <span className={styles.high}>
-                  {formatTempShort(daily.temperature_2m_max[i])}
+                  {formatTempShort(daily.temperature_2m_max[i], metricFirst)}
                 </span>
                 <span className={styles.low}>
-                  {formatTempShort(daily.temperature_2m_min[i])}
+                  {formatTempShort(daily.temperature_2m_min[i], metricFirst)}
                 </span>
               </div>
               <div className={styles.precip}>
                 <span>💧 {daily.precipitation_probability_max[i]}%</span>
-                <span>{formatPrecipAmount(daily.precipitation_sum[i])}</span>
+                <span>{formatPrecipAmount(daily.precipitation_sum[i], metricFirst)}</span>
               </div>
               <div className={styles.uv} style={{ color: getUvColor(uv) }}>
                 UV {Math.round(uv)}
               </div>
               {snow > 0 && (
-                <div className={styles.snow}>❄️ {formatSnowfall(snow)}</div>
+                <div className={styles.snow}>❄️ {formatSnowfall(snow, metricFirst)}</div>
               )}
             </button>
           );

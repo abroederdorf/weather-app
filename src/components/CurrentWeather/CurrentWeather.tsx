@@ -5,6 +5,7 @@ import {
   formatWindSpeed, degreesToCompass, formatSnowfall, formatTime,
 } from '../../utils/units';
 import { getWeatherInfo, getUvLabel, getUvColor, getAqiLabel, getAqiColor } from '../../utils/weather';
+import { useUnitPreference } from '../../hooks/useUnitPreference';
 import styles from './CurrentWeather.module.css';
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function CurrentWeather({ data, locationName, selectedDay, airQuality }: Props) {
+  const { metricFirst } = useUnitPreference();
   const { current, daily, timezone } = data;
   const isToday = selectedDay === 0;
   const weather = getWeatherInfo(isToday ? current.weathercode : daily.weathercode[selectedDay]);
@@ -37,23 +39,23 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
 
       {isToday ? (
         <>
-          <div className={styles.temp}>{formatTemp(current.temperature_2m)}</div>
+          <div className={styles.temp}>{formatTemp(current.temperature_2m, metricFirst)}</div>
           <div className={styles.feelsLike}>
-            Feels like {formatTemp(current.apparent_temperature)}
+            Feels like {formatTemp(current.apparent_temperature, metricFirst)}
           </div>
 
           <div className={styles.statRow}>
-            <Stat label="Precip" value={formatPrecip(current.precipitation)} />
+            <Stat label="Precip" value={formatPrecip(current.precipitation, metricFirst)} />
             <Stat label="Cloud" value={`${current.cloudcover}%`} />
           </div>
 
           <div className={styles.windRow}>
             <span className={styles.windLabel}>Wind</span>
             <span className={styles.windValue}>
-              {formatWindSpeed(current.wind_speed_10m)} {degreesToCompass(current.wind_direction_10m)}
+              {formatWindSpeed(current.wind_speed_10m, metricFirst)} {degreesToCompass(current.wind_direction_10m)}
             </span>
             <span className={styles.gustLabel}>Gusts</span>
-            <span className={styles.windValue}>{formatWindSpeed(current.wind_gusts_10m)}</span>
+            <span className={styles.windValue}>{formatWindSpeed(current.wind_gusts_10m, metricFirst)}</span>
           </div>
 
           <div className={styles.sunRow}>
@@ -63,22 +65,22 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
           </div>
 
           <div className={styles.highLow}>
-            <span className={styles.high}>H: {formatTemp(daily.temperature_2m_max[0])}</span>
+            <span className={styles.high}>H: {formatTemp(daily.temperature_2m_max[0], metricFirst)}</span>
             <span className={styles.sep}>·</span>
-            <span className={styles.low}>L: {formatTemp(daily.temperature_2m_min[0])}</span>
+            <span className={styles.low}>L: {formatTemp(daily.temperature_2m_min[0], metricFirst)}</span>
           </div>
         </>
       ) : (
         <>
           <div className={styles.highLow}>
-            <span className={styles.high}>H: {formatTemp(daily.temperature_2m_max[selectedDay])}</span>
+            <span className={styles.high}>H: {formatTemp(daily.temperature_2m_max[selectedDay], metricFirst)}</span>
             <span className={styles.sep}>·</span>
-            <span className={styles.low}>L: {formatTemp(daily.temperature_2m_min[selectedDay])}</span>
+            <span className={styles.low}>L: {formatTemp(daily.temperature_2m_min[selectedDay], metricFirst)}</span>
           </div>
 
           <div className={styles.feelsLike}>
-            Feels like H {formatTempShort(daily.apparent_temperature_max[selectedDay])}
-            {' / '}L {formatTempShort(daily.apparent_temperature_min[selectedDay])}
+            Feels like H {formatTempShort(daily.apparent_temperature_max[selectedDay], metricFirst)}
+            {' / '}L {formatTempShort(daily.apparent_temperature_min[selectedDay], metricFirst)}
           </div>
 
           <div className={styles.sunRow}>
@@ -94,7 +96,7 @@ export function CurrentWeather({ data, locationName, selectedDay, airQuality }: 
               style={{ color: getUvColor(daily.uv_index_max[selectedDay]) }}
             />
             {daily.snowfall_sum[selectedDay] > 0 && (
-              <Stat label="Snow" value={formatSnowfall(daily.snowfall_sum[selectedDay])} />
+              <Stat label="Snow" value={formatSnowfall(daily.snowfall_sum[selectedDay], metricFirst)} />
             )}
           </div>
         </>

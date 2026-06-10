@@ -2,6 +2,7 @@ import type { HourlyData } from '../../api/openmeteo';
 import { getHoursForDay, formatHour } from '../../api/openmeteo';
 import { formatTemp, formatPrecipAmount, formatWindSpeed, degreesToCompass, formatSnowfall } from '../../utils/units';
 import { getUvLabel, getUvColor, getWeatherInfo } from '../../utils/weather';
+import { useUnitPreference } from '../../hooks/useUnitPreference';
 import styles from './HourlyForecast.module.css';
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function HourlyForecast({ hourly, selectedDay, timezone }: Props) {
+  const { metricFirst } = useUnitPreference();
   const indices = getHoursForDay(hourly, selectedDay);
 
   return (
@@ -24,20 +26,20 @@ export function HourlyForecast({ hourly, selectedDay, timezone }: Props) {
             <div key={i} className={styles.card}>
               <div className={styles.time}>{formatHour(hourly.time[i], timezone)}</div>
               <div className={styles.icon}>{getWeatherInfo(hourly.weathercode[i]).icon}</div>
-              <div className={styles.temp}>{formatTemp(hourly.temperature_2m[i])}</div>
-              <Row label="Feels" value={formatTemp(hourly.apparent_temperature[i])} />
+              <div className={styles.temp}>{formatTemp(hourly.temperature_2m[i], metricFirst)}</div>
+              <Row label="Feels" value={formatTemp(hourly.apparent_temperature[i], metricFirst)} />
               <Row label="Rain" value={`${hourly.precipitation_probability[i]}%`} />
-              <Row label="Amount" value={formatPrecipAmount(hourly.precipitation[i])} />
+              <Row label="Amount" value={formatPrecipAmount(hourly.precipitation[i], metricFirst)} />
               <Row
                 label="UV"
                 value={`${Math.round(uv)} · ${getUvLabel(uv)}`}
                 style={{ color: getUvColor(uv) }}
               />
               <Row label="Cloud" value={`${hourly.cloudcover[i]}%`} />
-              <Row label="Wind" value={formatWindSpeed(hourly.wind_speed_10m[i])} />
+              <Row label="Wind" value={formatWindSpeed(hourly.wind_speed_10m[i], metricFirst)} />
               <Row label="Dir" value={degreesToCompass(hourly.wind_direction_10m[i])} />
-              <Row label="Gusts" value={formatWindSpeed(hourly.wind_gusts_10m[i])} />
-              {snow > 0 && <Row label="Snow" value={formatSnowfall(snow)} />}
+              <Row label="Gusts" value={formatWindSpeed(hourly.wind_gusts_10m[i], metricFirst)} />
+              {snow > 0 && <Row label="Snow" value={formatSnowfall(snow, metricFirst)} />}
             </div>
           );
         })}
